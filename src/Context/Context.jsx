@@ -5,7 +5,6 @@ import runChat from "../config/Gemini.js";
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-
     const [input, setInput] = useState("");
     const [recentPrompt, setRecentPrompt] = useState("");
     const [prevPrompts, setPrevPrompts] = useState([]);
@@ -18,10 +17,21 @@ const ContextProvider = (props) => {
         setResultData("");
         setLoading(true);
         setShowResult(true);
-        setRecentPrompt(input)
+        setRecentPrompt(input);
 
         const response = await runChat(prompt); // Use the prompt passed in
-        setResultData(response);
+        let responseArray = response.split("**");
+        let newResponse = "";
+
+        for (let i = 0; i < responseArray.length; i++) {
+            if (i === 0 || i % 2 !== 1) {
+                newResponse += responseArray[i];
+            } else {
+                newResponse += "<b>" + responseArray[i] + "</b>";
+            }
+        }
+
+        setResultData(newResponse);
         setLoading(false);
         setInput(""); // Clear the input after processing
     };
